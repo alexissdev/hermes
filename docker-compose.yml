@@ -26,7 +26,9 @@ services:
       - hermes-network
 
   hermes:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: hermes-backend
     ports:
       - "8080:8080"
@@ -37,7 +39,6 @@ services:
       - SPRING_REDIS_HOST=${SPRING_REDIS_HOST}
       - SPRING_REDIS_PORT=${SPRING_REDIS_PORT}
       - SPRING_REDIS_PASSWORD=${SPRING_REDIS_PASSWORD}
-      - JWT_SECRET=${JWT_SECRET}
     depends_on:
       - mysql
       - redis
