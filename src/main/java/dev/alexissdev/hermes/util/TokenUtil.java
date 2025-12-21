@@ -11,10 +11,15 @@ import static dev.alexissdev.hermes.secutiry.configuration.SecurityTokenConfigur
 public class TokenUtil {
 
     public static String generateToken(String userId) {
+        return generateToken(userId, EXPIRATION_TIME);
+    }
+
+    public static String generateToken(String userId, long expirationTime) {
+        long now = System.currentTimeMillis();
         return Jwts.builder()
                 .subject(userId)
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .issuedAt(new Date(now))
+                .expiration(new Date(now + expirationTime))
                 .signWith(SECRET_KEY)
                 .compact();
     }
