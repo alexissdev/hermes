@@ -1,6 +1,7 @@
 package dev.alexissdev.hermes.user.service;
 
 import dev.alexissdev.hermes.user.User;
+import dev.alexissdev.hermes.user.page.PageResponse;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +20,16 @@ public interface UserService {
      */
 
     List<User> findAll();
+
+    /**
+     * Retrieves a paginated list of all User entities.
+     *
+     * @param page the page number to retrieve, with 0 being the first page
+     * @param size the number of users to retrieve per page
+     * @return a List of User objects representing the users in the requested page
+     */
+
+    PageResponse findAll(int page, int size);
 
 
     /**
@@ -48,7 +59,7 @@ public interface UserService {
      * @return the saved or updated User entity
      */
 
-    default User save(User user) {
+    default Optional<User> save(User user) {
         return save(user, false);
     }
 
@@ -61,7 +72,7 @@ public interface UserService {
      * @return the saved or updated User entity
      */
 
-    User save(User user, boolean updateCache);
+    Optional<User> save(User user, boolean updateCache);
 
     /**
      * Updates the specified User entity in the cache.

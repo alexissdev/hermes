@@ -1,9 +1,13 @@
-package dev.alexissdev.hermes.user.repository;
+package dev.alexissdev.hermes.user.service;
 
 import dev.alexissdev.hermes.redis.RedisConfiguration;
 import dev.alexissdev.hermes.user.User;
-import dev.alexissdev.hermes.user.service.UserService;
+import dev.alexissdev.hermes.user.page.PageResponse;
+import dev.alexissdev.hermes.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +36,19 @@ public class CachedRemoteUserService
     }
 
     @Override
+    public PageResponse findAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<User> userPage = userRepository.findAll(pageable);
+
+        return new PageResponse(
+                userPage.getContent(),
+                userPage.getNumber(),
+                userPage.getTotalPages(),
+                userPage.getTotalElements()
+        );
+    }
+
+    @Override
     public Optional<User> findById(String id) {
         User cachedUser = (User) redisCache.opsForValue().get(String.format(RedisConfiguration.USER_KEY, id));
         if (cachedUser != null) {
@@ -50,10 +67,10 @@ public class CachedRemoteUserService
     }
 
     @Override
-    public User save(User user, boolean updateCache) {
+    public Optional<User> save(User user, boolean updateCache) {
         if (user ==  null) {
             LOGGER.warning("User cannot be null for save operation.");
-            return User.NULL_USER;
+            return Optional.empty();
         }
 
         User savedUser = userRepository.save(user);
@@ -63,7 +80,8 @@ public class CachedRemoteUserService
             // TODO: Ideally, when a player leaves the Minecraft server, they should no longer be cached.
             deleteCache(savedUser.getId());
         }
-        return savedUser;
+
+        return Optional.of(savedUser);
     }
 
     @Override

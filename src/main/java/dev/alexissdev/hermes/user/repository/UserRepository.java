@@ -1,6 +1,8 @@
 package dev.alexissdev.hermes.user.repository;
 
 import dev.alexissdev.hermes.user.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
@@ -39,4 +41,13 @@ public interface UserRepository
      */
 
     boolean existsById(String id);
+
+    /**
+     * Retrieves a paginated list of all User entities from the database.
+     *
+     * @param pageable the pagination information, including page number, page size, and sorting options
+     * @return a Page containing User entities for the requested page
+     */
+
+    Page<User> findAll(Pageable pageable);
 }
