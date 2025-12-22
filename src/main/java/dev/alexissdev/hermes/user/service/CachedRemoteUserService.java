@@ -2,8 +2,11 @@ package dev.alexissdev.hermes.user.service;
 
 import dev.alexissdev.hermes.redis.RedisConfiguration;
 import dev.alexissdev.hermes.user.User;
+import dev.alexissdev.hermes.user.controller.request.UpdateUserRequest;
+import dev.alexissdev.hermes.user.economy.UserEconomy;
 import dev.alexissdev.hermes.user.page.PageResponse;
 import dev.alexissdev.hermes.user.repository.UserRepository;
+import dev.alexissdev.hermes.user.statistic.UserStatistic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -68,7 +71,7 @@ public class CachedRemoteUserService
 
     @Override
     public Optional<User> save(User user, boolean updateCache) {
-        if (user ==  null) {
+        if (user == null) {
             LOGGER.warning("User cannot be null for save operation.");
             return Optional.empty();
         }
@@ -86,7 +89,7 @@ public class CachedRemoteUserService
 
     @Override
     public User updateInCache(User user) {
-        if (user ==  null) {
+        if (user == null) {
             LOGGER.warning("User cannot be null for update operation.");
             return User.NULL_USER;
         }
@@ -107,8 +110,25 @@ public class CachedRemoteUserService
         }));
     }
 
+    @Override
+    public Optional<User> update(String id, UpdateUserRequest request) {
+        return userRepository.findById(id).map(user -> {
+            UserEconomy economy = user.getEconomy();
+            economy.setCoins(request.coins());
+            economy.setGems(request.gems());
+
+            UserStatistic stats = user.getStatistic();
+            stats.setKills(request.kills());
+            stats.setDeaths(request.deaths());
+            stats.setWins(request.wins());
+            stats.setLosses(request.losses());
+
+            return userRepository.save(user);
+        });
+    }
+
     private void deleteCache(String id) {
-        if (id ==  null) {
+        if (id == null) {
             LOGGER.warning("User ID cannot be null for cache deletion.");
             return;
         }
@@ -117,7 +137,7 @@ public class CachedRemoteUserService
     }
 
     private void cacheObject(String id, Object object) {
-        if (id ==  null || object ==  null) {
+        if (id == null || object == null) {
             LOGGER.warning("User ID or object cannot be null for cache operation.");
             return;
         }

@@ -1,6 +1,7 @@
 package dev.alexissdev.hermes.user.service;
 
 import dev.alexissdev.hermes.user.User;
+import dev.alexissdev.hermes.user.controller.request.UpdateUserRequest;
 import dev.alexissdev.hermes.user.page.PageResponse;
 
 import java.util.List;
@@ -93,4 +94,17 @@ public interface UserService {
      */
 
     Optional<User> deleteById(String id);
+
+    /**
+     * Updates an existing User entity based on the provided identifier and update request.
+     * The method applies the changes specified in the UpdateUserRequest to the User associated
+     * with the given id. If no User exists with the specified id, an empty Optional is returned.
+     *
+     * @param id the unique identifier of the User to be updated
+     * @param request the UpdateUserRequest containing the updated user statistics
+     * @return an Optional containing the updated User if found and updated successfully,
+     *         or an empty Optional if no User exists with the given id
+     */
+
+    Optional<User> update(String id, UpdateUserRequest request);
 }
