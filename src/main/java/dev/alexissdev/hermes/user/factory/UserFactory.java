@@ -38,6 +38,7 @@ public class UserFactory {
         return new User(
                 userId,
                 request.username(),
+                User.DEFAULT_LANGUAGE,
                 new UserEconomy(
                         userId,
                         0.0,

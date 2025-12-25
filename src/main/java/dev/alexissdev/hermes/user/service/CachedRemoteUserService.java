@@ -123,6 +123,7 @@ public class CachedRemoteUserService
             stats.setWins(request.wins());
             stats.setLosses(request.losses());
 
+            user.setLanguage(request.language());
             return userRepository.save(user);
         });
     }
