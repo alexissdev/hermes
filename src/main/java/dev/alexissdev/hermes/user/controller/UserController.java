@@ -57,7 +57,7 @@ public class UserController {
 
         return userService.save(user)
                 .map(createUser -> ResponseEntity.status(HttpStatus.CREATED)
-                        .body(UserResponse.from(user)))
+                        .body(UserResponse.from(createUser)))
                 .orElse(ResponseEntity.badRequest().build());
     }
 

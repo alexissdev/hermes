@@ -33,26 +33,28 @@ public class UserFactory {
 
 
     public User from(CreateUserRequest request) {
-        String userId = request.id();
+        User user = new User();
+        user.setId(request.id());
+        user.setUsername(request.username());
+        user.setLanguage(User.DEFAULT_LANGUAGE);
 
-        return new User(
-                userId,
-                request.username(),
-                User.DEFAULT_LANGUAGE,
-                new UserEconomy(
-                        userId,
-                        0.0,
-                        0,
-                        null
-                ),
-                new UserStatistic(
-                        userId,
-                        0,
-                        0,
-                        0,
-                        0,
-                        null
-                )
-        );
+        UserEconomy economy = new UserEconomy();
+        UserStatistic statistic = new UserStatistic();
+
+        economy.setId(user.getId());
+        economy.setUser(user);
+        economy.setCoins(0.0);
+        economy.setGems(0);
+        statistic.setUser(user);
+        statistic.setKills(0);
+        statistic.setDeaths(0);
+        statistic.setWins(0);
+        statistic.setLosses(0);
+        statistic.setId(user.getId());
+
+        user.setEconomy(economy);
+        user.setStatistic(statistic);
+
+        return user;
     }
 }

@@ -22,7 +22,7 @@ public interface UserRepository
      * @return an Optional containing the found User, or an empty Optional if no user is found
      */
 
-    Optional<User> findByName(String name);
+    Optional<User> findByUsername(String name);
 
     /**
      * Checks if a User entity exists in the database with the specified name.
@@ -31,7 +31,7 @@ public interface UserRepository
      * @return true if a user with the specified name exists, false otherwise
      */
 
-    boolean existsByName(String name);
+    boolean existsByUsername(String name);
 
     /**
      * Checks if a User entity exists in the database with the specified ID.

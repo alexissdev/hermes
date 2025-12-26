@@ -1,6 +1,5 @@
 package dev.alexissdev.hermes.redis;
 
-import dev.alexissdev.hermes.user.controller.response.UserResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -14,8 +13,8 @@ public class RedisConfiguration {
 
 
     @Bean
-    public RedisTemplate<String, UserResponse> redisTemplate(RedisConnectionFactory connectionFactory) {
-        RedisTemplate<String, UserResponse> template = new RedisTemplate<>();
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
 
         RedisSerializer<Object> jsonSerializer = RedisSerializer.json();
