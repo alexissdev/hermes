@@ -3,6 +3,7 @@ package dev.alexissdev.hermes.user.service;
 import dev.alexissdev.hermes.redis.RedisConfiguration;
 import dev.alexissdev.hermes.user.User;
 import dev.alexissdev.hermes.user.controller.request.UpdateUserRequest;
+import dev.alexissdev.hermes.user.controller.response.UserResponse;
 import dev.alexissdev.hermes.user.economy.UserEconomy;
 import dev.alexissdev.hermes.user.page.PageResponse;
 import dev.alexissdev.hermes.user.repository.UserRepository;
@@ -53,13 +54,13 @@ public class CachedRemoteUserService
 
     @Override
     public Optional<User> findById(String id) {
-        User cachedUser = (User) redisCache.opsForValue().get(String.format(RedisConfiguration.USER_KEY, id));
+        UserResponse cachedUser = (UserResponse) redisCache.opsForValue().get(String.format(RedisConfiguration.USER_KEY, id));
         if (cachedUser != null) {
-            return Optional.of(cachedUser);
+            return Optional.of(User.from(cachedUser));
         }
 
         return Optional.ofNullable(userRepository.findById(id).map((user) -> {
-            cacheObject(id, user);
+            cacheObject(id, UserResponse.from(user));
             return user;
         }).orElse(User.NULL_USER));
     }
@@ -94,7 +95,7 @@ public class CachedRemoteUserService
             return User.NULL_USER;
         }
 
-        cacheObject(user.getId(), user);
+        cacheObject(user.getId(), UserResponse.from(user));
         return user;
     }
 
@@ -137,12 +138,12 @@ public class CachedRemoteUserService
         redisCache.delete(String.format(RedisConfiguration.USER_KEY, id));
     }
 
-    private void cacheObject(String id, Object object) {
-        if (id == null || object == null) {
+    private void cacheObject(String id, UserResponse response) {
+        if (id == null || response == null) {
             LOGGER.warning("User ID or object cannot be null for cache operation.");
             return;
         }
 
-        redisCache.opsForValue().set(RedisConfiguration.USER_KEY.formatted(id), object);
+        redisCache.opsForValue().set(RedisConfiguration.USER_KEY.formatted(id), response);
     }
 }

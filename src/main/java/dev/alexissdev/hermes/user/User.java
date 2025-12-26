@@ -1,5 +1,6 @@
 package dev.alexissdev.hermes.user;
 
+import dev.alexissdev.hermes.user.controller.response.UserResponse;
 import dev.alexissdev.hermes.user.economy.UserEconomy;
 import dev.alexissdev.hermes.user.statistic.UserStatistic;
 import jakarta.persistence.CascadeType;
@@ -36,4 +37,27 @@ public class User {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "statistic_id")
     private UserStatistic statistic;
+
+    /**
+     * Transforms a {@code UserResponse} object into a {@code User} entity.
+     *
+     * @param response the {@code UserResponse} object containing user details to be transformed
+     * @return a new {@code User} entity initialized with the data from the given {@code UserResponse}
+     */
+
+    public static User from(UserResponse response) {
+        return new User(
+                response.id(),
+                response.username(),
+                response.language(),
+                new UserEconomy(response.id(), response.coins(), response.gems(), null),
+                new UserStatistic(
+                        response.id(),
+                        response.kills(),
+                        response.deaths(),
+                        response.wins(),
+                        response.losses(),
+                        null
+                ));
+    }
 }
